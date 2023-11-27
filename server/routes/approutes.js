@@ -5,8 +5,8 @@ const authController = require("../controllers/authcontroller");
 const generalController = require("../controllers/generalcontroller");
 const { body } = require("express-validator");
 
-router.get("/login", viewController.showLogin);
-router.get("/cadastro", viewController.showCadastro);
+// router.get("/login", viewController.showLogin);
+// router.get("/cadastro", viewController.showCadastro);
 
 router.post(
   "/cadastro",
@@ -24,11 +24,11 @@ router.post(
   [body("email").isEmail(), body("password").notEmpty()],
   authController.attemptLogin
 );
-router.get("/logout", authController.logout);
+// router.get("/logout", authController.logout);
 
-router.get("/", viewController.showHome);
-router.post("/", viewController.showHome);
-router.get("/admin", viewController.showAdmin);
+// router.get("/", (req, res) => { console.log("Oi") });
+// router.post("/", viewController.showHome);
+// router.get("/admin", viewController.showAdmin);
 router.post("/admin", viewController.showAdmin);
 
 router.post(

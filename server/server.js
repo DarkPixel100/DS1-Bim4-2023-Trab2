@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+const bodyParser = require("body-parser");
+
 const cors = require("cors");
 const session = require("express-session");
 const SessionStore = require("express-session-sequelize")(session.Store);
@@ -11,6 +13,10 @@ const appRoutes = require("./routes/approutes");
 const { sequelize } = require("./config/database");
 
 app.use(cors());
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 // app.use(express.static("build"));
 
 // session configuration
@@ -44,8 +50,8 @@ sequelize
     console.error("Error syncing database:", error);
   });
 
-app.use(appRoutes);
+app.use('/api', appRoutes);
 
-app.listen(8080, () => {
-  console.log("app is running on port 8080");
+app.listen(8000, () => {
+  console.log("app is running on port 8000");
 });
