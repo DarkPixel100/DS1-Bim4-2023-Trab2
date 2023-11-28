@@ -21,19 +21,19 @@ router.post(
 );
 router.post(
   "/login",
-  [body("email").isEmail(), body("password").notEmpty()],
+  [body("email").notEmpty(), body("password").notEmpty()],
   authController.attemptLogin
 );
-// router.get("/logout", authController.logout);
+// router.get("/logout", authController.logout);XXXXXXXXXXX
 
-// router.get("/", (req, res) => { console.log("Oi") });
-// router.post("/", viewController.showHome);
-// router.get("/admin", viewController.showAdmin);
-router.post("/admin", viewController.showAdmin);
+// router.post("/", authController.verifyAuthToken, viewController.showHome);
+// router.get("/admin", authController.verifyAuthToken, viewController.showAdmin);
+router.post("/admin", authController.verifyAuthToken, viewController.showAdmin);
 
 router.post(
   "/addLivro",
   [
+    authController.verifyAuthToken,
     body("titulo").isString().notEmpty(),
     body("autores").isString().notEmpty(),
     body("ano").isInt().notEmpty(),
@@ -42,10 +42,26 @@ router.post(
   ],
   generalController.addLivro
 );
-router.post("/alugarLivro", generalController.alugarLivro);
-router.post("/devolverLivro", generalController.devolverLivro);
+router.post(
+  "/alugarLivro",
+  authController.verifyAuthToken,
+  generalController.alugarLivro
+);
+router.post(
+  "/devolverLivro",
+  authController.verifyAuthToken,
+  generalController.devolverLivro
+);
 
-router.post("/deletarLivro", generalController.deletarLivro);
-router.post("/deletarUser", generalController.deletarUser);
+router.post(
+  "/deletarLivro",
+  authController.verifyAuthToken,
+  generalController.deletarLivro
+);
+router.post(
+  "/deletarUser",
+  authController.verifyAuthToken,
+  generalController.deletarUser
+);
 
 module.exports = router;

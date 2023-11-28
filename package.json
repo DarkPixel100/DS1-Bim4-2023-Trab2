@@ -12,9 +12,8 @@
     "bootstrap": "^5.3.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "express-session": "^1.17.3",
-    "express-session-sequelize": "^2.3.0",
     "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
     "path": "^0.12.7",
     "react": "^18.2.0",
@@ -22,7 +21,6 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
     "react-scripts": "^5.0.1",
-    "req-flash": "^0.0.3",
     "sequelize": "^6.33.0",
     "web-vitals": "^2.1.4"
   },
@@ -50,5 +48,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8000"
+  "proxy": "http://localhost:8000",
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
 }

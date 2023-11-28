@@ -1,4 +1,4 @@
-const { sequelize, Sequelize } = require("../config/database");
+// const { sequelize, Sequelize } = require("../config/database");
 
 const usuarioModel = require("../config/associations").usuario;
 const emprestimoModel = require("../config/associations").emprestimo;
@@ -9,48 +9,47 @@ const { validationResult } = require("express-validator");
 exports.addLivro = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    req.flash("formError", { errors: errors.array() });
-    res.send(400, req.flash("formError"));
+    res.status(400, { errors: errors.array() });
   }
 
   const cartucho = req.body;
   cartuchoModel
     .create(cartucho)
     .then((data) => {
-      req.flash("dataRegister", "Data saved:" + data);
       res.redirect("/");
     })
     .catch((err) => {
-      req.flash("addError", err);
-      res.send(req.flash("addError"));
+      res.status(400).send(err);
     });
 };
 
 exports.alugarLivro = async (req, res) => {
   const emprestimo = {
-    usuarioId: req.session.user.id,
+    usuarioId: req.userId,
     cartuchoId: parseInt(req.body.cartuchoID),
   };
 
-  const qtde = (await cartuchoModel.findOne({ where: { id: emprestimo.cartuchoId } }))
-    .quantidade;
+  const qtde = (
+    await cartuchoModel.findOne({ where: { id: emprestimo.cartuchoId } })
+  ).quantidade;
 
-  if (qtde == 0) {
-    req.flash(
-      "lendError",
-      "Esse cartucho não pode ser emprestado (quantidade insuficiente)."
-    );
-    res.send(req.flash("lendError"));
+  if (qtde === 0) {
+    req.send(400).send({
+      lendError:
+        "Esse cartucho não pode ser emprestado (quantidade insuficiente).",
+    });
   } else if (
     await emprestimoModel.findOne({
-      where: { usuarioId: emprestimo.usuarioId, cartuchoId: emprestimo.cartuchoId },
+      where: {
+        usuarioId: emprestimo.usuarioId,
+        cartuchoId: emprestimo.cartuchoId,
+      },
     })
   ) {
-    req.flash(
-      "lendError",
-      "Esse cartucho não pode ser emprestado (você já possui esse cartucho)."
-    );
-    res.send(req.flash("lendError"));
+    req.send(400).send({
+      lendError:
+        "Esse cartucho não pode ser emprestado (você já possui esse cartucho).",
+    });
   } else
     emprestimoModel
       .create(emprestimo)
@@ -59,18 +58,16 @@ exports.alugarLivro = async (req, res) => {
           { quantidade: qtde - 1 },
           { where: { id: emprestimo.cartuchoId } }
         );
-        req.flash("dataRegister", "Data saved:" + data);
         res.redirect("/");
       })
       .catch((err) => {
-        req.flash("addError", err);
-        res.send(req.flash("addError"));
+        res.status(400).send(err);
       });
 };
 
 exports.devolverLivro = async (req, res) => {
   const emprestimo = {
-    usuarioId: req.session.user.id,
+    usuarioId: req.userId,
     cartuchoId: req.body.cartuchoID,
   };
 
@@ -84,12 +81,10 @@ exports.devolverLivro = async (req, res) => {
         { quantidade: qtde + 1 },
         { where: { id: emprestimo.cartuchoId } }
       );
-      req.flash("dataRegister", "Data deleted:" + data);
       res.redirect("/");
     })
     .catch((err) => {
-      req.flash("addError", err);
-      res.send(req.flash("addError"));
+      res.status(400).send(err);
     });
 };
 
@@ -97,12 +92,10 @@ exports.deletarLivro = (req, res) => {
   cartuchoModel
     .destroy({ where: { id: req.body.cartuchoID } })
     .then((data) => {
-      req.flash("dataRegister", "Data deleted:" + data);
       res.redirect("/admin");
     })
     .catch((err) => {
-      req.flash("addError", err);
-      res.send(req.flash("addError"));
+      res.status(400).send(err);
     });
 };
 
@@ -123,12 +116,10 @@ exports.deletarUser = async (req, res) => {
   usuarioModel
     .destroy({ where: { id: req.body.userID } })
     .then((data) => {
-      req.flash("dataRegister", "Data deleted:" + data);
-      if (req.session.user.id == req.body.userID) res.redirect("/logout");
+      if (req.userId === req.body.userID) res.redirect("/logout");
       else res.redirect("/admin");
     })
     .catch((err) => {
-      req.flash("addError", err);
-      res.send(req.flash("addError"));
+      res.status(400).send(err);
     });
 };

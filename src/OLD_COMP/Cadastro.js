@@ -3,21 +3,6 @@ import React from "react";
 const Cadastro = (props) => {
   return (
     <React.Fragment>
-      <header
-        style={{
-          background: "rgb(10, 13, 21)",
-          textAlign: "center",
-          position: "relative",
-        }}
-      >
-        <h1
-          style={{
-            color: "rgb(237, 247, 255)",
-          }}
-        >
-          Biblioteca!
-        </h1>
-      </header>
       <main>
         <h2>Cadastro:</h2>
         {Boolean(props.reqFlash.errAuth) && (
