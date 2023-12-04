@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
+import TabelaUsuarios from "../components/TabelaUsuarios";
 import TabelaCartuchos from "../components/TabelaCartuchos";
-import AddCartucho from "../components/AddCartucho";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Home = () => {
+const Admin = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
   const [updateTable, setUpdateTable] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -30,19 +31,23 @@ const Home = () => {
     fetchData();
   }, [updateTable]);
 
-  return (
-    <>
-      {isLoggedIn && (
+  if (isLoggedIn) {
+    if (userData.isAdmin)
+      return (
         <main>
-          <AddCartucho
+          <TabelaUsuarios
             userData={userData}
+            onSelect={(userId) => setSelectedUserId(userId)}
             updateTable={() => setUpdateTable(!updateTable)}
           />
-          <TabelaCartuchos userData={userData} updateTable={updateTable} />
+          <TabelaCartuchos
+            userData={userData}
+            selectedUserId={selectedUserId}
+            updateTable={updateTable}
+          />
         </main>
-      )}
-    </>
-  );
+      );
+    else console.error("Error 403: Forbidden");
+  } else return null;
 };
-
-export default Home;
+export default Admin;

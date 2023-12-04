@@ -9,24 +9,18 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      autores: {
+      nome: {
+        type: DataTypes.STRING,
+      },
+      sistema: {
         type: DataTypes.STRING(1234),
       },
-      titulo: {
-        type: DataTypes.STRING,
-      },
       ano: {
-        type: DataTypes.INTEGER,
-      },
-      editora: {
-        type: DataTypes.STRING,
-      },
-      quantidade: {
         type: DataTypes.INTEGER,
       },
     },
     { timestamps: false }
   );
-  
+
   return cartuchos;
 };

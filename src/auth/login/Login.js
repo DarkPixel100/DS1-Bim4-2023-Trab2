@@ -1,48 +1,66 @@
 import axios from "axios";
-import React from "react";
-import { Button, Form, FormGroup, FormLabel, Nav } from "react-bootstrap";
+import React, { useState } from "react";
+import {
+  Container,
+  Button,
+  Form,
+  FormGroup,
+  FormLabel,
+  Nav,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+
 const Login = () => {
   const loginAPI = "http://localhost:3000/api/login";
   const navigate = useNavigate();
-  let regErrors = [];
-  const submitLoginForm = (event) => {
+  const [regErrors, setRegErrors] = useState([]);
+
+  const submitLoginForm = async (event) => {
     event.preventDefault();
+
     const formElement = document.querySelector("#loginForm");
     const formData = new FormData(formElement);
     const formDataJSON = Object.fromEntries(formData);
+
     const btnPointer = document.querySelector("#login-btn");
     btnPointer.innerHTML = "Aguarde...";
     btnPointer.setAttribute("disabled", true);
-    axios
-      .post(loginAPI, formDataJSON)
-      .then((response) => {
-        btnPointer.innerHTML = "Login";
-        btnPointer.removeAttribute("disabled");
-        const data = response.data;
-        const token = data.token;
-        if (!token) {
-          alert("Unable to login. Please try after some time.");
-          return;
-        }
-        localStorage.clear();
-        localStorage.setItem("user-token", token);
-        setTimeout(() => {
-          navigate("/");
-        }, 500);
-      })
-      .catch((error) => {
-        btnPointer.innerHTML = "Login";
-        btnPointer.removeAttribute("disabled");
-        regErrors = error.response.data;
-        document.getElementById("errors").innerHTML = JSON.stringify(regErrors);
-      });
+
+    try {
+      const response = await axios.post(loginAPI, formDataJSON);
+      const data = response.data;
+      const token = data.token;
+
+      if (!token) {
+        alert("Unable to login. Please try after some time.");
+        return;
+      }
+
+      localStorage.clear();
+      localStorage.setItem("authToken", token);
+
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    } catch (error) {
+      console.log(error.response.data);
+      btnPointer.innerHTML = "Login";
+      btnPointer.removeAttribute("disabled");
+      setRegErrors(error.response.data);
+    }
   };
+
   return (
-    <React.Fragment>
+    <Container>
       <main>
         <h2>Login:</h2>
-        <span id="errors"></span>
+        {regErrors.errors && (
+          <small className="text-danger">
+            {regErrors.errors.map((error, index) => (
+              <div key={index}>{error}</div>
+            ))}
+          </small>
+        )}
         <Form id="loginForm" onSubmit={submitLoginForm} autoComplete="off">
           <FormGroup className="col-md-4">
             <FormLabel htmlFor={"login-email"}>Email:</FormLabel>
@@ -70,7 +88,8 @@ const Login = () => {
           <Nav.Link href="/auth/cadastro">Ainda não tenho uma conta</Nav.Link>
         </Form>
       </main>
-    </React.Fragment>
+    </Container>
   );
 };
+
 export default Login;

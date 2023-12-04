@@ -11,7 +11,7 @@ const { sequelize } = require("./config/database");
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // app.use(express.static("build"));
@@ -26,7 +26,7 @@ sequelize
     console.error("Error syncing database:", error);
   });
 
-app.use('/api', appRoutes);
+app.use("/api", appRoutes);
 
 app.listen(8000, () => {
   console.log("app is running on port 8000");

@@ -26,42 +26,39 @@ router.post(
 );
 // router.get("/logout", authController.logout);XXXXXXXXXXX
 
-// router.post("/", authController.verifyAuthToken, viewController.showHome);
-// router.get("/admin", authController.verifyAuthToken, viewController.showAdmin);
-router.post("/admin", authController.verifyAuthToken, viewController.showAdmin);
+// router.post("/", authController.authenticateToken, viewController.showHome);
+// router.get("/admin", authController.authenticateToken, viewController.showAdmin);
+
+// router.post(
+//   "/admin",
+//   authController.authenticateToken,
+//   viewController.showAdmin
+// );
 
 router.post(
-  "/addLivro",
+  "/addCartucho",
   [
-    authController.verifyAuthToken,
-    body("titulo").isString().notEmpty(),
-    body("autores").isString().notEmpty(),
+    authController.authenticateToken,
+    body("nome").isString().notEmpty(),
+    body("sistema").isString().notEmpty(),
     body("ano").isInt().notEmpty(),
-    body("editora").isString().notEmpty(),
-    body("quantidade").isInt().notEmpty(),
   ],
-  generalController.addLivro
-);
-router.post(
-  "/alugarLivro",
-  authController.verifyAuthToken,
-  generalController.alugarLivro
-);
-router.post(
-  "/devolverLivro",
-  authController.verifyAuthToken,
-  generalController.devolverLivro
+  generalController.addCartucho
 );
 
 router.post(
-  "/deletarLivro",
-  authController.verifyAuthToken,
-  generalController.deletarLivro
+  "/deletarCartucho",
+  authController.authenticateToken,
+  generalController.deletarCartucho
 );
 router.post(
-  "/deletarUser",
-  authController.verifyAuthToken,
-  generalController.deletarUser
+  "/deletarUsuario",
+  authController.authenticateToken,
+  authController.deletarUsuario
 );
+
+router.get("/userData", viewController.fetchUserData);
+router.get("/cartuchos", viewController.searchResults);
+router.get("/usuarios", viewController.listUsers);
 
 module.exports = router;
