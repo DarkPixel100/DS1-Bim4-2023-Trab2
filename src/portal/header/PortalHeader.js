@@ -31,10 +31,6 @@ const PortalHeader = () => {
     navigate("/auth/login");
   };
 
-  const admin = () => {
-    navigate("/admin");
-  };
-
   useEffect(() => {
     fetchData();
   }, []);

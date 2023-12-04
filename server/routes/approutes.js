@@ -5,9 +5,6 @@ const authController = require("../controllers/authcontroller");
 const generalController = require("../controllers/generalcontroller");
 const { body } = require("express-validator");
 
-// router.get("/login", viewController.showLogin);
-// router.get("/cadastro", viewController.showCadastro);
-
 router.post(
   "/cadastro",
   [
@@ -24,16 +21,6 @@ router.post(
   [body("email").notEmpty(), body("password").notEmpty()],
   authController.attemptLogin
 );
-// router.get("/logout", authController.logout);XXXXXXXXXXX
-
-// router.post("/", authController.authenticateToken, viewController.showHome);
-// router.get("/admin", authController.authenticateToken, viewController.showAdmin);
-
-// router.post(
-//   "/admin",
-//   authController.authenticateToken,
-//   viewController.showAdmin
-// );
 
 router.post(
   "/addCartucho",

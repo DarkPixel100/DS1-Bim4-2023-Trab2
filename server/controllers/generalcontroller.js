@@ -1,7 +1,4 @@
 // const { sequelize, Sequelize } = require("../config/database");
-
-const usuarioModel = require("../config/associations").usuario;
-const emprestimoModel = require("../config/associations").emprestimo;
 const cartuchoModel = require("../config/associations").cartucho;
 
 const { validationResult } = require("express-validator");
